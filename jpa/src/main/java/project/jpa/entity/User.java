@@ -1,13 +1,10 @@
-package project.jpa;
+package project.jpa.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class User {
+public class User extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "user_id")
@@ -17,5 +14,8 @@ public class User {
     private String phone;
     private String email;
     private LocalDate birthday;
+
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 
 }
