@@ -22,8 +22,4 @@ public class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updateTm;
 
-//    @Column(columnDefinition = "boolean default false")
-    @ColumnDefault("false")
-    private Boolean deleteFlg;
-
 }
