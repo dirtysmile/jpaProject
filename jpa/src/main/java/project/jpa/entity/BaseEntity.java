@@ -22,4 +22,6 @@ public class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updateTm;
 
+    private int delete_flg;
+
 }
