@@ -17,7 +17,7 @@ class UserRepositoryTest {
     @Test
     @Rollback(false)
     public void saveUser(){
-        User u = new User();
+        User u = new User("thkim");
 
         u.setName("김태현");
         repository.save(u);
