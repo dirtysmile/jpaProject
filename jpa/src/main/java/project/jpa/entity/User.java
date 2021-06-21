@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashMap;
 
 @Entity
 @Getter
@@ -16,7 +17,7 @@ public class User extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
-    private String personal_id;
+    private String personalId;
     private String password;
     private String name;
     private String phone;
@@ -28,8 +29,8 @@ public class User extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    public User(String personal_id, String password, String name, String phone, String email, LocalDate birthday, Gender gender) {
-        this.personal_id = personal_id;
+    public User(String personalId, String password, String name, String phone, String email, LocalDate birthday, Gender gender) {
+        this.personalId = personalId;
         this.password = password;
         this.name = name;
         this.phone = phone;

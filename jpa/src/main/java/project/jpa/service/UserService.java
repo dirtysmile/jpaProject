@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import project.jpa.entity.User;
 import project.jpa.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -20,7 +22,12 @@ public class UserService {
     }
 
     private void validateDublicatePersionalId(User user) {
-        userRepository.fin
+        List<User> users = userRepository.findByPersonalId(user.getPersonalId());
+        if(!users.isEmpty()){
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+
+
     }
 
 }
