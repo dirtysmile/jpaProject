@@ -21,6 +21,11 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
+    @Transactional(readOnly = true)
+    public List<User> userList(){
+        return userRepository.findAll();
+    }
+
     private void validateDublicatePersionalId(User user) {
         List<User> users = userRepository.findByPersonalId(user.getPersonalId());
         if(!users.isEmpty()){
