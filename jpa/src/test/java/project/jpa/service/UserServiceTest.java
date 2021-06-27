@@ -38,7 +38,13 @@ class UserServiceTest {
 
     @Test
     public void 중복가입_실패(){
+        //given
+        User user1 = new User("thkim","password","태현","01099841803","dirtysmile@naver.com", LocalDate.of(1989,02,27), Gender.male);
+        User user2 = new User("thkim","password","태현","01099841803","dirtysmile@naver.com", LocalDate.of(1989,02,27), Gender.male);
 
+        //when
+        userService.join(user1);
+        userService.join(user2);
     }
 
 }
