@@ -1,7 +1,6 @@
 package project.jpa.service;
 
-import org.assertj.core.api.Assert;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +32,7 @@ class UserServiceTest {
         //then
         List<User> users = userService.userList();
 
-        Assertions.assertThat(users.size()).isEqualTo(1);
+        Assertions.assertEquals(users.size(),1);
     }
 
     @Test
@@ -44,7 +43,8 @@ class UserServiceTest {
 
         //when
         userService.join(user1);
-        userService.join(user2);
+
+        Assertions.assertThrows(IllegalStateException.class,()->userService.join(user2));
     }
 
 }

@@ -26,11 +26,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
+
+
     private void validateDublicatePersionalId(User user) {
         List<User> users = userRepository.findByPersonalId(user.getPersonalId());
         if(!users.isEmpty()){
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
+
+
     }
 
 }
