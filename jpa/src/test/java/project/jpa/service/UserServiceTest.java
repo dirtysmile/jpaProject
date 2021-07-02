@@ -23,7 +23,7 @@ class UserServiceTest {
     public void 회원가입(){
 
         //given
-        User user1 = new User("thkim","password","태현","01099841803","dirtysmile@naver.com", LocalDate.of(1989,02,27), Gender.male);
+        User user1 = new User("thkim2","password","태현","01099841803","dirtysmile@naver.com", LocalDate.of(1989,02,27), Gender.male);
 
         //when
         userService.join(user1);
