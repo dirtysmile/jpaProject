@@ -1,9 +1,13 @@
 package project.jpa.service;
 
+import org.flywaydb.test.FlywayTestExecutionListener;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
@@ -14,6 +18,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class })
 class UserServiceTest {
 
     @Autowired
