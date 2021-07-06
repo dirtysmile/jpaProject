@@ -1,16 +1,24 @@
 package project.jpa.service;
 
 import org.aspectj.lang.annotation.Before;
-import org.flywaydb.test.FlywayTestExecutionListener;
-import org.flywaydb.test.annotation.FlywayTest;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
 import project.jpa.initData.DataService;
@@ -18,10 +26,10 @@ import project.jpa.initData.DataService;
 import java.time.LocalDate;
 import java.util.List;
 
-
+@WebMvcTest(UserService.class)
+@AutoConfigureRestDocs
 @SpringBootTest
 @Transactional
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, FlywayTestExecutionListener.class })
 class UserServiceTest {
 
     @Autowired
@@ -30,9 +38,19 @@ class UserServiceTest {
     @Autowired
     DataService dataService;
 
+    @Autowired
+    MockMvc mockMvc;
+
     @BeforeEach
-    public void setup() {
+    public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation)).build();
         dataService.insertUsers();
+    }
+
+    @Test
+    public void springDocsTest(){
+
     }
 
     @Test

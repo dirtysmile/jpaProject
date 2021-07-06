@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -17,6 +18,8 @@ public class User extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
+
+    @NotEmpty
     private String personalId;
     private String password;
     private String name;
