@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,8 +23,6 @@ import project.jpa.initData.DataService;
 import java.time.LocalDate;
 import java.util.List;
 
-@WebMvcTest(UserService.class)
-@AutoConfigureRestDocs
 @SpringBootTest
 @Transactional
 class UserServiceTest {
@@ -38,20 +33,11 @@ class UserServiceTest {
     @Autowired
     DataService dataService;
 
-    @Autowired
-    MockMvc mockMvc;
-
     @BeforeEach
-    public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation)).build();
+    public void setup() {
         dataService.insertUsers();
     }
 
-    @Test
-    public void springDocsTest(){
-
-    }
 
     @Test
     public void 회원가입(){

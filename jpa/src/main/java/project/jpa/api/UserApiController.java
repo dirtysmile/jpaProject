@@ -1,16 +1,11 @@
 package project.jpa.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
 import project.jpa.service.UserService;
@@ -18,20 +13,51 @@ import project.jpa.service.UserService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-@Api(tags={"1. Dashboard"})
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {
 
     private final UserService userService;
 
+
+    @GetMapping("/api/v1/users")
+    public List<User> userV1(){
+        return userService.findUsers();
+    }
+
+    @GetMapping("/api/v2/users")
+    public Result userV2(){
+        List<User> users = userService.findUsers();
+        List<UserDto> collect = users.stream()
+                .map(m -> new UserDto(m.getName()))
+                .collect(Collectors.toList());
+
+        return new Result(collect);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class UserDto {
+        private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private T data;
+    }
+
     @PostMapping("/api/v1/users")
     public CreateUserResponse saveUserV1(@RequestBody @Valid User user){
         Long id = userService.join(user);
         return new CreateUserResponse(id);
     }
+
+
 
     /**
      * 사용자 등록
@@ -47,12 +73,7 @@ public class UserApiController {
      * @see 체체체
      * @return User 테이블의 id 값.
      */
-    @ApiOperation(value="일부 대시보드 조회", notes="대시보드 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Success!!"),
-            @ApiResponse(code = 500, message = "Internal Server Error!!"),
-            @ApiResponse(code = 404, message = "Not Found!!")
-    })
+
     @PostMapping("/api/v2/users")
     public CreateUserResponse saveUserV2(@RequestBody @Valid CreateUserRequest request){
         User user = new User(request.getPersonalId(),
