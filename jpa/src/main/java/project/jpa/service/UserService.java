@@ -7,6 +7,8 @@ import project.jpa.entity.User;
 import project.jpa.repository.UserRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,6 +21,11 @@ public class UserService {
         validateDublicatePersionalId(user);
 
         return userRepository.save(user).getId();
+    }
+
+    public User findUser(Long id){
+        Optional<User> user = userRepository.findById(id);
+        return user.orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자 입니다."));
     }
 
     @Transactional(readOnly = true)

@@ -24,6 +24,29 @@ public class UserApiController {
     private final UserService userService;
 
 
+    @GetMapping("/api/v1/users/{id}")
+    public UserDto2 SearchUserV1(@PathVariable("id") Long id){
+        User user = userService.findUser(id);
+        UserDto2 result = new UserDto2(user);
+        return result;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class UserDto2{
+        Long id;
+        String personalId;
+        String name;
+        LocalDate birthday;
+
+        UserDto2(User user){
+            this.id = user.getId();
+            this.personalId = user.getPersonalId();
+            this.name = user.getName();
+            this.birthday = user.getBirthday();
+        }
+    }
+
     @GetMapping("/api/v1/users")
     public List<User> userV1(){
         return userService.findUsers();
@@ -39,17 +62,6 @@ public class UserApiController {
         return new Result(collect);
     }
 
-    @Data
-    @AllArgsConstructor
-    static class UserDto {
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class Result<T>{
-        private T data;
-    }
 
     @PostMapping("/api/v1/users")
     public CreateUserResponse saveUserV1(@RequestBody @Valid User user){
@@ -88,6 +100,20 @@ public class UserApiController {
 
         return new CreateUserResponse(id);
     }
+
+
+    @Data
+    @AllArgsConstructor
+    static class UserDto {
+        private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private T data;
+    }
+
 
     @Data
     static class CreateUserRequest {
