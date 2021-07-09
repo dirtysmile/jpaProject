@@ -21,6 +21,9 @@ import project.jpa.entity.User;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +61,29 @@ class JpaApplicationTests {
 
 		Assertions.assertEquals(result,hello);
 
+	}
+
+
+	@Test
+	public void 생일을_나이로_변경(){
+		// given
+		LocalDate birthDate = LocalDate.of(1989, 02, 27);
+		LocalDate currentDate = LocalDate.now();
+		// when
+		System.out.println(Period.between(birthDate, currentDate).getYears());
+
+		// then
+	}
+
+	@Test
+	public void test(){
+		int i = 5;
+		int i2 = 15;
+		int i3 = 25;
+
+		System.out.println(i/10);
+		System.out.println(i2/10);
+		System.out.println(i3/10);
 	}
 
 }

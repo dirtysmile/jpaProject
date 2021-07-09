@@ -169,4 +169,47 @@ class UserServiceTest {
 
     }
 
+
+    @Test
+    public void sort(){
+        List<User> fetch = queryFactory
+                .selectFrom(user)
+                .orderBy(user.name.desc())
+                .fetch();
+
+        fetch.stream()
+                .forEach(user1 -> System.out.println(user1.toString()));
+    }
+
+    @Test
+    public void paging1(){
+        List<User> fetch = queryFactory
+                .selectFrom(user)
+                .orderBy(user.name.desc())
+                .offset(1)
+                .limit(2)
+                .fetch();
+
+        fetch.stream()
+                .forEach(user1 -> System.out.println(user1.toString()));
+    }
+
+
+    @Test
+    public void paging2(){
+//        전체 조
+        QueryResults<User> userQueryResults = queryFactory
+                .selectFrom(user)
+                .orderBy(user.name.desc())
+                .offset(1)
+                .limit(2)
+                .fetchResults();
+
+        System.out.println(userQueryResults.getTotal());
+        List<User> fetch = userQueryResults.getResults();
+
+        fetch.stream()
+                .forEach(user1 -> System.out.println(user1.toString()));
+    }
+
 }

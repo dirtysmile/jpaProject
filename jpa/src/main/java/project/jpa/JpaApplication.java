@@ -25,10 +25,10 @@ public class JpaApplication {
 		}
 	}
 
-	@Bean
-	public CommandLineRunner test(DataService dataService){
-		return args -> {
-			dataService.insertUsers();
-		};
-	}
+//	@Bean
+//	public CommandLineRunner test(DataService dataService){
+//		return args -> {
+//			dataService.insertUsers();
+//		};
+//	}
 }
