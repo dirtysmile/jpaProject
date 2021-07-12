@@ -1,7 +1,11 @@
 package project.jpa.repository;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.QUser;
@@ -34,7 +38,30 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
         return fetch;
     }
 
+    @Override
+    public Page<User> searchPageSimple(UserSearchCondition condition, Pageable pageable) {
 
+        QueryResults<User> results = queryFactory
+                .selectFrom(user)
+                .where(
+                        usernameEq(condition.getName()),
+                        ageGoe(condition.getAgeGoe()),
+                        ageLoe(condition.getAgeLoe())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<User> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable,total);
+    }
+
+    @Override
+    public Page<User> searchPageComplex(UserSearchCondition condition, Pageable pageable) {
+        return null;
+    }
 
     private BooleanExpression usernameEq(String username){
         return StringUtils.hasText(username) ? user.name.eq(username) : null;

@@ -1,6 +1,9 @@
 package project.jpa.service;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.aspectj.lang.annotation.Before;
 
@@ -12,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.Gender;
 import project.jpa.entity.QUser;
 import project.jpa.entity.User;
@@ -212,4 +217,66 @@ class UserServiceTest {
                 .forEach(user1 -> System.out.println(user1.toString()));
     }
 
+
+    @Test
+    public void dynamicQuery_BooleanBuilder(){
+        String usernameParam = "태현0";
+        Integer age = 71;
+
+        List<User> result = searchMember1(usernameParam,age);
+        Assertions.assertEquals(result.size(),1);
+
+    }
+
+    private List<User> searchMember1(String usernameCond, Integer ageCond) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if(usernameCond != null){
+            builder.and(user.name.eq(usernameCond));
+        }
+
+        if(ageCond !=null){
+            builder.and(user.age.eq(ageCond));
+        }
+
+        return queryFactory
+                .selectFrom(user)
+                .where(builder)
+                .fetch();
+    }
+
+
+
+
+    @Test
+    public void dynamicQuery_WhereParam(){
+        String usernameParam = "태현0";
+        Integer ageParam = 71;
+
+        List<User> result = searchMember2(usernameParam,ageParam);
+        Assertions.assertEquals(result.size(),1);
+    }
+
+    private List<User> searchMember2(String usernameParam, Integer ageParam) {
+        return queryFactory
+                .selectFrom(user)
+                .where(usernameEq(usernameParam), ageEq(ageParam))
+//                .where(allEq(usernameParam,ageParam))
+                .fetch();
+    }
+
+    private BooleanExpression ageEq(Integer ageParam) {
+        return ageParam != null ? user.age.eq(ageParam) : null;
+    }
+
+    private BooleanExpression usernameEq(String usernameParam) {
+        if(usernameParam ==null){
+            return null;
+        } else {
+            return user.name.eq(usernameParam);
+        }
+    }
+
+    private BooleanExpression allEq(String usernameCond, Integer ageCond){
+        return usernameEq(usernameCond).and(ageEq(ageCond));
+    }
 }

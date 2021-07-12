@@ -5,7 +5,7 @@ import project.jpa.entity.User;
 
 import java.util.List;
 
-public interface UserRepository  extends JpaRepository<User,Long> {
+public interface UserRepository  extends JpaRepository<User,Long>, UserRepositoryCustom{
 
     List<User> findByPersonalId(String personalId);
     List<User> findByName(String name);

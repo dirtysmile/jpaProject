@@ -16,6 +16,11 @@ spring:
         #        show_sql: true
         format_sql: true
         default_batch_fetch_size: 100 # 주문 조회 V3.1
+
+  data:
+    web:
+      pageable:
+        default-page-size: 20
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace

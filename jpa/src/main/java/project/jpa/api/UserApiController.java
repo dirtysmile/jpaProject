@@ -1,17 +1,31 @@
 package project.jpa.api;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
 import project.jpa.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +33,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "user", description = "사용자 API")
+
 public class UserApiController {
 
     private final UserService userService;
+
+
 
 
     @GetMapping("/api/v1/users/{id}")
@@ -87,6 +105,14 @@ public class UserApiController {
      */
 
     @PostMapping("/api/v2/users")
+    @Operation(summary = "사용자 추가", description = "사용자를 추가 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공") ,
+            @ApiResponse(responseCode = "500",
+                    description = "1.중복된 사용자 입니다. \t\n 2.비밀 번호를 확인해 주십시오.",
+                    content = @Content
+            ) ,
+    })
     public CreateUserResponse saveUserV2(@RequestBody @Valid CreateUserRequest request){
         User user = new User(request.getPersonalId(),
                 request.getPassword(),
@@ -99,6 +125,14 @@ public class UserApiController {
         Long id = userService.join(user);
 
         return new CreateUserResponse(id);
+    }
+
+    @GetMapping("/api/v3/users/list")
+    public Page<User> searchUserPagingV1(UserSearchCondition condition, Pageable pageable){
+
+        System.out.println("hi");
+        return userService.findUserPaging(condition,pageable);
+
     }
 
 
@@ -115,15 +149,31 @@ public class UserApiController {
     }
 
 
+//    @Schema(description = "사용자")
     @Data
     static class CreateUserRequest {
-        @NotEmpty
+//        @Pattern(regexp = "[ (?i)^(?=.*[a-z])[a-z0-9]{8,20}$ ]")
+//        @Schema(description = "유저 ID")
         private String personalId;
+
+//        @Schema(description = "비밀번호")
         private String password;
+
+//        @Schema(description = "이름")
         private String name;
+
+//        @Schema(description = "전화번호")
         private String phone;
+
+//        @Email
+//        @Schema(description = "이메일", nullable = false, example = "abc@navee.com")
         private String email;
+
+//        @DateTimeFormat(pattern = "yyyy-MM-dd")
+//        @Schema(description = "생년월일", example = "yyyy-MM-dd")
         private LocalDate birthday;
+
+//        @Schema(description = "성별", defaultValue = "male")
         private Gender gender;
 
     }
