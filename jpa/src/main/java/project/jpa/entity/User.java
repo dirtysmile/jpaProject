@@ -3,6 +3,7 @@ package project.jpa.entity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import project.jpa.dto.UpdateUserDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class User{
+public class User extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "user_id")
@@ -32,13 +33,6 @@ public class User{
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createTm;
-
-    @LastModifiedDate
-    private LocalDateTime updateTm;
-    private int delete_flg;
 
     public User(String personalId, String password, String name, String phone, String email, LocalDate birthday, Gender gender) {
         this.personalId = personalId;
@@ -52,6 +46,17 @@ public class User{
         this.calculateAge();
     }
 
+    public User(Long id, String personalId, String password, String name, String phone, String email, LocalDate birthday, Gender gender) {
+        this.personalId = personalId;
+        this.password = password;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.birthday = birthday;
+        this.gender = gender;
+    }
+
+
     private void calculateAge(){
         LocalDate currentDate = LocalDate.now();
         if ((this.birthday != null) && (currentDate != null)) {
@@ -59,5 +64,9 @@ public class User{
         } else {
             this.age = 0;
         }
+    }
+
+    public void updateUser(UpdateUserDto user){
+        this.name = user.getName();
     }
 }

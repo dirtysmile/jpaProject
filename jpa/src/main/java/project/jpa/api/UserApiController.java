@@ -17,11 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.jpa.dto.CreateUserDto;
+import project.jpa.dto.UpdateUserDto;
+import project.jpa.dto.UserRequestDto;
 import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
 import project.jpa.service.UserService;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -31,8 +35,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@RestController
+@RestController()
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 @Tag(name = "user", description = "사용자 API")
 
 public class UserApiController {
@@ -40,14 +45,71 @@ public class UserApiController {
     private final UserService userService;
 
 
+    @PostMapping("/users")
+    @Operation(summary = "사용자 추가", description = "사용자를 추가 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공") ,
+            @ApiResponse(responseCode = "400", description = "비어 있는 값이 있습니다.") ,
+            @ApiResponse(responseCode = "500",
+                    description = "[110-90001] 중복된 사용자 입니다. \t\n [110-90002] 비밀 번호를 확인해 주십시오.",
+                    content = @Content
+            ) ,
+    })
+    public Long saveUser(@RequestBody @Valid CreateUserDto request){
+        User user = new User(request.getPersonalId(),
+                request.getPassword(),
+                request.getName(),
+                request.getEmail(),
+                request.getPhone(),
+                request.getBirthday(),
+                request.getGender());
 
+        Long id = userService.join(user);
 
-    @GetMapping("/api/v1/users/{id}")
-    public UserDto2 SearchUserV1(@PathVariable("id") Long id){
+        return id;
+    }
+
+    @GetMapping("/users")
+    @Operation(summary = "사용자 전체 조회", description = "전체 사용자를 조합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공")
+    })
+    public Result findUsers(){
+        List<User> users = userService.findUsers();
+        List<UserRequestDto> collect = users.stream()
+                .map(user -> new UserRequestDto(user))
+                .collect(Collectors.toList());
+
+        return new Result(collect);
+    }
+
+    @GetMapping("/users/{id}")
+    @Operation(summary = "사용자 한명 조회", description = "특정 사용자를 조회합니다.")
+    public UserRequestDto findUserById(@PathVariable("id") Long id){
         User user = userService.findUser(id);
-        UserDto2 result = new UserDto2(user);
+        UserRequestDto result = new UserRequestDto(user);
         return result;
     }
+
+    @PutMapping("/users")
+    @Operation(summary = "사용자 업데이트", description = "사용자 정보 변경")
+    public User UpdateUser(@RequestBody UpdateUserDto request){
+        User user = new User(request.getId(),
+                request.getPersonalId(),
+                request.getPassword(),
+                request.getName(),
+                request.getPhone(),
+                request.getEmail(),
+                request.getBirthday(),
+                request.getGender());
+
+        User updateUser = userService.updateUser(user);
+        return updateUser;
+    }
+
+
+// ========================
+
 
     @Data
     @AllArgsConstructor
@@ -73,6 +135,7 @@ public class UserApiController {
     @GetMapping("/api/v2/users")
     public Result userV2(){
         List<User> users = userService.findUsers();
+
         List<UserDto> collect = users.stream()
                 .map(m -> new UserDto(m.getName()))
                 .collect(Collectors.toList());
@@ -81,51 +144,11 @@ public class UserApiController {
     }
 
 
-    @PostMapping("/api/v1/users")
-    public CreateUserResponse saveUserV1(@RequestBody @Valid User user){
-        Long id = userService.join(user);
-        return new CreateUserResponse(id);
-    }
 
 
 
-    /**
-     * 사용자 등록
-     *
-     * spring rest doc ( 스와거 문서 )
-     * java doc
-     * @param  request <br/>
-     *          String persionalId 사용자 ID <br/>
-     *          String password 사용자 비밀번호 <br/>
-     *          String name 사용자 이름 <br/>
-     * @version 4.6.1
-     * @exception NullPointerException
-     * @see 체체체
-     * @return User 테이블의 id 값.
-     */
 
-    @PostMapping("/api/v2/users")
-    @Operation(summary = "사용자 추가", description = "사용자를 추가 합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공") ,
-            @ApiResponse(responseCode = "500",
-                    description = "1.중복된 사용자 입니다. \t\n 2.비밀 번호를 확인해 주십시오.",
-                    content = @Content
-            ) ,
-    })
-    public CreateUserResponse saveUserV2(@RequestBody @Valid CreateUserRequest request){
-        User user = new User(request.getPersonalId(),
-                request.getPassword(),
-                request.getName(),
-                request.getEmail(),
-                request.getPhone(),
-                request.getBirthday(),
-                request.getGender());
 
-        Long id = userService.join(user);
-
-        return new CreateUserResponse(id);
-    }
 
     @GetMapping("/api/v3/users/list")
     public Page<User> searchUserPagingV1(UserSearchCondition condition, Pageable pageable){
@@ -149,34 +172,6 @@ public class UserApiController {
     }
 
 
-//    @Schema(description = "사용자")
-    @Data
-    static class CreateUserRequest {
-//        @Pattern(regexp = "[ (?i)^(?=.*[a-z])[a-z0-9]{8,20}$ ]")
-//        @Schema(description = "유저 ID")
-        private String personalId;
-
-//        @Schema(description = "비밀번호")
-        private String password;
-
-//        @Schema(description = "이름")
-        private String name;
-
-//        @Schema(description = "전화번호")
-        private String phone;
-
-//        @Email
-//        @Schema(description = "이메일", nullable = false, example = "abc@navee.com")
-        private String email;
-
-//        @DateTimeFormat(pattern = "yyyy-MM-dd")
-//        @Schema(description = "생년월일", example = "yyyy-MM-dd")
-        private LocalDate birthday;
-
-//        @Schema(description = "성별", defaultValue = "male")
-        private Gender gender;
-
-    }
 
     @Data
     static class CreateUserResponse {

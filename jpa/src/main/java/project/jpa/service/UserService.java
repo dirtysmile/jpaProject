@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.jpa.dto.UpdateUserDto;
 import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.User;
 import project.jpa.repository.UserRepository;
@@ -50,5 +51,10 @@ public class UserService {
     public Page findUserPaging(UserSearchCondition condition, Pageable pageable){
         Page<User> result = userRepository.searchPageSimple(condition, pageable);
         return result;
+    }
+
+    public User updateUser(User user){
+        User save = userRepository.save(user);
+        return save;
     }
 }
