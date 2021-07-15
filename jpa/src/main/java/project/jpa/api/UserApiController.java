@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@RestController()
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @Tag(name = "user", description = "사용자 API")
