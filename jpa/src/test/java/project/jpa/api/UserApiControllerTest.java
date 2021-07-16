@@ -28,38 +28,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserApiControllerTest {
 
-
-    @InjectMocks
-    UserApiController userApiController;
-
-    @Mock
-    UserService userService;
-
     @Autowired
     private MockMvc mockMvc;
 
 
-    User user;
-    List<User> users;
-
-    @BeforeEach
-    void prepare(){
-
-        user = new User(1L,"admin","password","administrator","01000000000",
-                "eee@gmail.com", LocalDate.of(1989,02,27), Gender.male);
-        users = new ArrayList<>();
-        users.add(user);
-    }
-
-
     @Test
     void 사용자_리스트() throws Exception{
-        Mockito.when(userService.findUsers())
-                .thenReturn(users);
-
         mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+    }
+
+    @Test
+    void 사용자_추가() throws Exception{
 
     }
 }

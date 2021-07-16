@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class User extends BaseEntity{
@@ -67,7 +68,7 @@ public class User extends BaseEntity{
         }
     }
 
-    public void updateUser(UpdateUserDto user){
-        this.name = user.getName();
+    public void updateUser(String name){
+        this.name = name;
     }
 }

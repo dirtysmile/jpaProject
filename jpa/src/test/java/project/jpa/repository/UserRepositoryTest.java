@@ -11,8 +11,10 @@ import project.jpa.dto.UserSearchCondition;
 import project.jpa.entity.Gender;
 import project.jpa.entity.User;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +24,9 @@ class UserRepositoryTest {
     @Autowired
     UserRepository repository;
 
+    @Autowired
+    EntityManager em;
+
     @Test
     @Rollback(false)
     public void saveUser(){
@@ -29,6 +34,19 @@ class UserRepositoryTest {
                 ,"dirtysmile89@naver.com", LocalDate.of(1989,02,27), Gender.male);
 
         repository.save(u);
+
+    }
+
+    @Test
+    @Rollback(false)
+    public void updateUser(){
+        Optional<User> user = repository.findById(2L);
+        System.out.println(user.get().getName());
+        User user1 = user.get();
+        user1.setName("토스트1");
+
+        repository.save(user1);
+
 
     }
 
