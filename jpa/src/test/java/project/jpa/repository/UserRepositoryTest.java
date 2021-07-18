@@ -62,7 +62,6 @@ class UserRepositoryTest {
         System.out.println(search.size());
 
     }
-
     @Test
     public void searchPageSimpleTest(){
         UserSearchCondition condition = new UserSearchCondition();
