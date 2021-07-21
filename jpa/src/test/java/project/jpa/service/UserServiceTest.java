@@ -30,7 +30,6 @@ public class UserServiceTest {
     public void prepare() {
         MockitoAnnotations.initMocks(this);
 
-
         this.user = new User(0L,
                 "thkim",
                 "password",
@@ -45,6 +44,8 @@ public class UserServiceTest {
         users.add(user);
     }
 
+
+
     @Test
     void 회원_조회(){
         Optional<User> otpUser = Optional.of(this.user);
@@ -53,7 +54,6 @@ public class UserServiceTest {
                 .thenReturn(otpUser);
 
         User findUser = userService.findUser(user.getId());
-        System.out.println(findUser);
 
         Assertions.assertEquals(this.user,findUser);
         Mockito.verify(userRepository).findById(this.user.getId());
@@ -61,7 +61,25 @@ public class UserServiceTest {
     }
 
     @Test
-    void 회원_중복(){
+    void 회원가입(){
+        //given
+        List<User> user2 = new ArrayList<>();
+        Mockito.when(userRepository.findByPersonalId(ArgumentMatchers.anyString()))
+                .thenReturn(user2);
+        Mockito.when(userRepository.save(ArgumentMatchers.any()))
+                .thenReturn(user);
+
+
+        //when
+        userService.join(user);
+
+        //then
+        Mockito.verify(userRepository).save(this.user);
+
+    }
+
+    @Test
+    void 회원가입_중복(){
         Mockito.when(userRepository.findByPersonalId(ArgumentMatchers.anyString()))
                 .thenReturn(this.users);
 

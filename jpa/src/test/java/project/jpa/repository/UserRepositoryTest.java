@@ -24,28 +24,39 @@ class UserRepositoryTest {
     @Autowired
     UserRepository repository;
 
-    @Autowired
-    EntityManager em;
-
     @Test
-    @Rollback(false)
     public void saveUser(){
+
+        //given
+        List<User> before_user = repository.findAll();
         User u = new User("thkim","password","kim","01099841803"
                 ,"dirtysmile89@naver.com", LocalDate.of(1989,02,27), Gender.male);
 
+        //when
         repository.save(u);
+        List<User> after_user = repository.findAll();
+
+        //then
+        Assertions.assertEquals(after_user.size(),before_user.size()+1);
 
     }
 
     @Test
-    @Rollback(false)
     public void updateUser(){
+        //given
         Optional<User> user = repository.findById(2L);
-        System.out.println(user.get().getName());
         User user1 = user.get();
-        user1.setName("토스트1");
 
+        //when
+        user1.updateUser("토스트");
         repository.save(user1);
+
+        Optional<User> after_user = repository.findById(2L);
+        User user2 = after_user.get();
+
+        //then
+
+        Assertions.assertEquals(user2.getName(),"토스트");
 
 
     }

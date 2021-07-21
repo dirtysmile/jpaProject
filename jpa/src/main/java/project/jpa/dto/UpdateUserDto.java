@@ -18,6 +18,7 @@ public class UpdateUserDto {
     @Schema(description = "유저 ID")
     private String personalId;
 
+
     @NotEmpty
     @Schema(description = "비밀번호", example = "password")
     private String password;

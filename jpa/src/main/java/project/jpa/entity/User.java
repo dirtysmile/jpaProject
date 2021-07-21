@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class User extends BaseEntity{
@@ -33,7 +32,6 @@ public class User extends BaseEntity{
 
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
-
 
     public User(String personalId, String password, String name, String phone, String email, LocalDate birthday, Gender gender) {
         this.personalId = personalId;

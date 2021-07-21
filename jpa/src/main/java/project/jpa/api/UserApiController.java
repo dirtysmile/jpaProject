@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,15 +39,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@Tag(name = "user", description = "사용자 API")
+@Tag(name = "user API", description = "사용자 API")
 
 public class UserApiController {
 
     private final UserService userService;
 
 
+
     @PostMapping("/users")
-    @Operation(summary = "사용자 추가", description = "사용자를 추가 합니다.")
+    @Operation(summary = "create User", description = "사용자를 추가 합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공") ,
             @ApiResponse(responseCode = "400", description = "비어 있는 값이 있습니다.") ,
