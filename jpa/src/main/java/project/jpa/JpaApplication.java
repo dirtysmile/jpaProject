@@ -17,13 +17,13 @@ public class JpaApplication {
 		SpringApplication.run(JpaApplication.class, args);
 	}
 
-	@RestController
-	private static class SampleController {
-		@RequestMapping("/")
-		public String index(){
-			return "Hello, World";
-		}
-	}
+//	@RestController
+//	private static class SampleController {
+//		@RequestMapping("/")
+//		public String index(){
+//			return "Hello, World";
+//		}
+//	}
 
 //	@Bean
 //	public CommandLineRunner test(DataService dataService){
