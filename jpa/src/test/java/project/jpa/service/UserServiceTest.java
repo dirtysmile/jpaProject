@@ -26,6 +26,12 @@ public class UserServiceTest {
     User user;
     List<User> users;
 
+
+    @Test
+    public void test(){
+        project.jpa.dto.Test test;
+    }
+
     @BeforeEach
     public void prepare() {
         MockitoAnnotations.initMocks(this);
@@ -62,6 +68,8 @@ public class UserServiceTest {
 
     @Test
     void 회원가입(){
+
+
         //given
         List<User> user2 = new ArrayList<>();
         Mockito.when(userRepository.findByPersonalId(ArgumentMatchers.anyString()))
