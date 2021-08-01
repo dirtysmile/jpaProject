@@ -19,4 +19,9 @@ public class UserController {
         return "a";
     }
 
+    @GetMapping("/users")
+    public String userList(){
+        return "b";
+    }
+
 }
