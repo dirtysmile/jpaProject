@@ -20,11 +20,10 @@ public class CreateUserDto {
     @Schema(description = "비밀번호", example = "password")
     private String password;
 
-    @NotEmpty
-    @Schema(description = "이름", example = "맨텍")
+    @Schema(description = "이름", example = "김태현")
     private String name;
 
-    @Schema(description = "전화번호", example = "01099991111")
+    @Schema(description = "전화번호", example = "01099841803")
     private String phone;
 
     @Email
